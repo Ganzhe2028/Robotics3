@@ -10,9 +10,11 @@ const int NECK_MIN_ANGLE = 20;
 const int NECK_MAX_ANGLE = 160;
 const int NECK_CENTER_ANGLE = 90;
 
-const int MOUTH_OPEN_INPUT_MIN = 70;
+const int MOUTH_OPEN_INPUT_MIN = 25;
+const int MOUTH_VISIBLE_INPUT = 30;
 const int MOUTH_CLOSED_ANGLE = 69;
-const int MOUTH_MAX_ANGLE = 90;
+const int MOUTH_VISIBLE_ANGLE = 82;
+const int MOUTH_MAX_ANGLE = 150;
 
 Servo mouth;
 Servo neck;
@@ -123,7 +125,11 @@ int mouthAngleFor(int mouthOpen) {
     return MOUTH_CLOSED_ANGLE;
   }
 
-  return mapClamped(mouthOpen, MOUTH_OPEN_INPUT_MIN, 99, MOUTH_CLOSED_ANGLE, MOUTH_MAX_ANGLE);
+  if (mouthOpen <= MOUTH_VISIBLE_INPUT) {
+    return mapClamped(mouthOpen, MOUTH_OPEN_INPUT_MIN, MOUTH_VISIBLE_INPUT, MOUTH_CLOSED_ANGLE, MOUTH_VISIBLE_ANGLE);
+  }
+
+  return mapClamped(mouthOpen, MOUTH_VISIBLE_INPUT, 99, MOUTH_VISIBLE_ANGLE, MOUTH_MAX_ANGLE);
 }
 
 void updateServos() {
