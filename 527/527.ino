@@ -10,7 +10,8 @@ const int NECK_MIN_ANGLE = 20;
 const int NECK_MAX_ANGLE = 160;
 const int NECK_CENTER_ANGLE = 90;
 
-const int MOUTH_CLOSED_ANGLE = 20;
+const int MOUTH_OPEN_INPUT_MIN = 70;
+const int MOUTH_CLOSED_ANGLE = 69;
 const int MOUTH_MAX_ANGLE = 90;
 
 Servo mouth;
@@ -105,7 +106,7 @@ void applyFaceData() {
   }
 
   neckTargetAngle = mapClamped(yaw, 0, 99, NECK_MIN_ANGLE, NECK_MAX_ANGLE);
-  mouthTargetAngle = mapClamped(mouthOpen, 0, 99, MOUTH_CLOSED_ANGLE, MOUTH_MAX_ANGLE);
+  mouthTargetAngle = mouthAngleFor(mouthOpen);
 }
 
 int twoDigitValueAt(byte index) {
@@ -115,6 +116,14 @@ int twoDigitValueAt(byte index) {
 int mapClamped(int value, int inputMin, int inputMax, int outputMin, int outputMax) {
   value = constrain(value, inputMin, inputMax);
   return map(value, inputMin, inputMax, outputMin, outputMax);
+}
+
+int mouthAngleFor(int mouthOpen) {
+  if (mouthOpen <= MOUTH_OPEN_INPUT_MIN) {
+    return MOUTH_CLOSED_ANGLE;
+  }
+
+  return mapClamped(mouthOpen, MOUTH_OPEN_INPUT_MIN, 99, MOUTH_CLOSED_ANGLE, MOUTH_MAX_ANGLE);
 }
 
 void updateServos() {
